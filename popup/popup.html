@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DashGuard Pro Password Manager</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div id="app" class="dg-app">
+    <!-- View 1: First-Time Setup -->
+    <div id="viewSetup" class="dg-view hidden">
+      <div class="dg-brand-hero">
+        <div class="dg-hero-shield">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3 0 1.13-.63 2.11-1.56 2.62l.56 2.38h-4l.56-2.38A2.99 2.99 0 0 1 9 10c0-1.66 1.34-3 3-3z"/></svg>
+        </div>
+        <h2>Welcome to DashGuard Pro</h2>
+        <p class="dg-hero-subtitle">Single-User Personal Vault & Firebase Cloud</p>
+      </div>
+
+      <div class="dg-card dg-setup-card">
+        <h3>Create Your Master Password</h3>
+        <p class="dg-caption">This password will be saved directly in your Firebase Database to securely protect all your accounts, cards, and notes.</p>
+
+        <div class="dg-form-group">
+          <label>Master Password</label>
+          <div class="dg-input-eye">
+            <input type="password" id="setupPass" placeholder="Enter master password (min 4 chars)">
+            <button type="button" class="dg-eye-btn" data-target="setupPass">👁️</button>
+          </div>
+          <div id="setupStrengthMeter" class="dg-strength-bar">
+            <div class="dg-strength-fill" style="width: 0%;"></div>
+          </div>
+          <div id="setupStrengthLabel" class="dg-strength-text">Password strength</div>
+        </div>
+
+        <div class="dg-form-group">
+          <label>Confirm Master Password</label>
+          <div class="dg-input-eye">
+            <input type="password" id="setupPassConfirm" placeholder="Re-enter master password">
+            <button type="button" class="dg-eye-btn" data-target="setupPassConfirm">👁️</button>
+          </div>
+        </div>
+
+        <div id="setupError" class="dg-error-msg hidden"></div>
+
+        <button id="btnInitVault" class="dg-btn dg-btn-primary">
+          Save Master Password & Launch
+        </button>
+      </div>
+    </div>
+
+    <!-- View 2: Locked Screen (Supports Quick 4-Digit PIN or Master Password) -->
+    <div id="viewLocked" class="dg-view hidden">
+      <div class="dg-brand-hero">
+        <div class="dg-hero-shield pulse">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3 0 1.13-.63 2.11-1.56 2.62l.56 2.38h-4l.56-2.38A2.99 2.99 0 0 1 9 10c0-1.66 1.34-3 3-3z"/></svg>
+        </div>
+        <h2>DashGuard Vault Locked</h2>
+        <p class="dg-hero-subtitle" id="lockSubtitle">Enter your Master Password</p>
+      </div>
+
+      <div class="dg-card dg-lock-card">
+        <!-- Quick 4-Digit PIN Box (if PIN is enabled) -->
+        <div id="boxPinUnlock" class="hidden">
+          <div class="dg-pin-display">
+            <span class="dg-pin-dot" id="pdot0"></span>
+            <span class="dg-pin-dot" id="pdot1"></span>
+            <span class="dg-pin-dot" id="pdot2"></span>
+            <span class="dg-pin-dot" id="pdot3"></span>
+          </div>
+          <input type="password" id="inputPinHidden" maxlength="4" style="opacity:0; position:absolute; pointer-events:none;">
+          <div class="dg-numpad">
+            <button class="dg-num-btn" data-num="1">1</button>
+            <button class="dg-num-btn" data-num="2">2</button>
+            <button class="dg-num-btn" data-num="3">3</button>
+            <button class="dg-num-btn" data-num="4">4</button>
+            <button class="dg-num-btn" data-num="5">5</button>
+            <button class="dg-num-btn" data-num="6">6</button>
+            <button class="dg-num-btn" data-num="7">7</button>
+            <button class="dg-num-btn" data-num="8">8</button>
+            <button class="dg-num-btn" data-num="9">9</button>
+            <button class="dg-num-btn" id="btnPinClear">C</button>
+            <button class="dg-num-btn" data-num="0">0</button>
+            <button class="dg-num-btn" id="btnPinBackspace">⌫</button>
+          </div>
+          <button type="button" id="btnSwitchToMasterPass" class="dg-link-btn" style="display:block; margin: 12px auto 0 auto;">
+            Use Master Password Instead
+          </button>
+        </div>
+
+        <!-- Master Password Unlock Box -->
+        <div id="boxMasterPassUnlock">
+          <div class="dg-form-group">
+            <div class="dg-input-eye">
+              <input type="password" id="unlockPass" placeholder="Master Password" autofocus>
+              <button type="button" class="dg-eye-btn" data-target="unlockPass">👁️</button>
+            </div>
+          </div>
+          <button id="btnUnlockVault" class="dg-btn dg-btn-primary">
+            Unlock Vault
+          </button>
+          <button type="button" id="btnSwitchToPin" class="dg-link-btn hidden" style="display:block; margin: 12px auto 0 auto;">
+            Use Quick 4-Digit PIN
+          </button>
+        </div>
+
+        <div id="unlockError" class="dg-error-msg hidden" style="margin-top:10px;"></div>
+      </div>
+    </div>
+
+    <!-- View 3: Main Unlocked App -->
+    <div id="viewMain" class="dg-view hidden">
+      <!-- Top Header -->
+      <header class="dg-header">
+        <div class="dg-header-brand">
+          <div class="dg-header-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3 0 1.13-.63 2.11-1.56 2.62l.56 2.38h-4l.56-2.38A2.99 2.99 0 0 1 9 10c0-1.66 1.34-3 3-3z"/></svg>
+          </div>
+          <div>
+            <div class="dg-app-title">DashGuard Pro</div>
+            <div class="dg-sync-pill">
+              <span class="dg-sync-dot"></span>
+              <span id="syncText">Firebase: Connected</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dg-header-actions">
+          <button id="btnOpenFullVault" class="dg-icon-btn" title="Open Full Vault Dashboard">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+          </button>
+          <button id="btnLockVault" class="dg-icon-btn" title="Lock Vault">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Active Domain Matching Banner -->
+      <div id="currentDomainBanner" class="dg-domain-banner hidden">
+        <div class="dg-domain-info">
+          <img id="domainFavicon" class="dg-domain-fav" src="" alt="">
+          <div>
+            <div class="dg-domain-name" id="currentDomainText">github.com</div>
+            <div class="dg-domain-sub" id="currentDomainMatchText">1 matching login (Ctrl+Shift+L)</div>
+          </div>
+        </div>
+        <button id="btnAutofillCurrent" class="dg-btn-mini">Autofill</button>
+      </div>
+
+      <!-- Navigation Tabs (Logins, Cards, Notes, Generator, Health, Settings) -->
+      <nav class="dg-tabs">
+        <button class="dg-tab active" data-tab="tabLogins">
+          <span>🔑</span> Logins <span class="dg-tab-badge" id="badgeLogins">0</span>
+        </button>
+        <button class="dg-tab" data-tab="tabCards">
+          <span>💳</span> Cards <span class="dg-tab-badge" id="badgeCards">0</span>
+        </button>
+        <button class="dg-tab" data-tab="tabNotes">
+          <span>📝</span> Notes
+        </button>
+        <button class="dg-tab" data-tab="tabGenerator">
+          <span>⚡</span> Gen
+        </button>
+        <button class="dg-tab" data-tab="tabHealth">
+          <span>🛡️</span> Health
+        </button>
+        <button class="dg-tab" data-tab="tabSettings">
+          <span>⚙️</span>
+        </button>
+      </nav>
+
+      <!-- Tab Content 1: Logins -->
+      <div id="tabLogins" class="dg-tab-panel active">
+        <div class="dg-search-bar">
+          <input type="text" id="searchInput" placeholder="Search logins, emails, sites...">
+        </div>
+
+        <div class="dg-filter-chips">
+          <button class="dg-chip active" data-filter="all">All</button>
+          <button class="dg-chip" data-filter="Social">Social</button>
+          <button class="dg-chip" data-filter="Work">Work</button>
+          <button class="dg-chip" data-filter="Finance">Finance</button>
+          <button class="dg-chip" data-filter="favorites">⭐ Favorites</button>
+        </div>
+
+        <div id="loginsList" class="dg-items-list">
+          <!-- Dynamically populated -->
+        </div>
+
+        <div id="emptyLogins" class="dg-empty-placeholder hidden">
+          <div class="dg-empty-icon">🛡️</div>
+          <div class="dg-empty-title">No logins found</div>
+          <div class="dg-empty-sub">Click "+ Add Login" below to save your first password to Firebase</div>
+        </div>
+
+        <button id="btnAddLoginModal" class="dg-fab" title="Add New Login">
+          + Add Login
+        </button>
+      </div>
+
+      <!-- Tab Content 2: Payment Cards (Dashlane Wallet Feature) -->
+      <div id="tabCards" class="dg-tab-panel">
+        <div id="cardsList" class="dg-items-list">
+          <!-- Dynamically populated cards -->
+        </div>
+
+        <div id="emptyCards" class="dg-empty-placeholder hidden">
+          <div class="dg-empty-icon">💳</div>
+          <div class="dg-empty-title">No Payment Cards</div>
+          <div class="dg-empty-sub">Store credit/debit cards for 1-click checkout autofill</div>
+        </div>
+
+        <button id="btnAddCardModal" class="dg-fab" title="Add Card">
+          + Add Card
+        </button>
+      </div>
+
+      <!-- Tab Content 3: Notes -->
+      <div id="tabNotes" class="dg-tab-panel">
+        <div id="notesList" class="dg-items-list">
+          <!-- Dynamically populated notes -->
+        </div>
+        <div id="emptyNotes" class="dg-empty-placeholder hidden">
+          <div class="dg-empty-icon">📝</div>
+          <div class="dg-empty-title">No secure notes</div>
+          <div class="dg-empty-sub">Store Wi-Fi passwords, recovery phrases, or private codes</div>
+        </div>
+        <button id="btnAddNoteModal" class="dg-fab" title="Add Secure Note">
+          + Add Note
+        </button>
+      </div>
+
+      <!-- Tab Content 4: Generator & History -->
+      <div id="tabGenerator" class="dg-tab-panel">
+        <div class="dg-gen-display">
+          <div id="genResult" class="dg-gen-text">Click Generate</div>
+          <button id="btnCopyGen" class="dg-copy-btn" title="Copy to Clipboard">
+            📋 Copy
+          </button>
+        </div>
+
+        <div class="dg-strength-box">
+          <div class="dg-strength-meter">
+            <div id="genStrengthFill" class="dg-strength-fill" style="width: 80%; background:#10b981;"></div>
+          </div>
+          <div class="dg-strength-meta">
+            <span id="genStrengthLabel">Strong</span>
+            <span id="genEntropyLabel">~74 bits entropy</span>
+          </div>
+        </div>
+
+        <div class="dg-gen-controls">
+          <div class="dg-control-row">
+            <label>Length: <span id="genLenVal">16</span></label>
+            <input type="range" id="genLength" min="8" max="64" value="16">
+          </div>
+
+          <div class="dg-toggles-grid">
+            <label class="dg-toggle">
+              <input type="checkbox" id="genUpper" checked>
+              <span>A-Z (Uppercase)</span>
+            </label>
+            <label class="dg-toggle">
+              <input type="checkbox" id="genLower" checked>
+              <span>a-z (Lowercase)</span>
+            </label>
+            <label class="dg-toggle">
+              <input type="checkbox" id="genNumbers" checked>
+              <span>0-9 (Numbers)</span>
+            </label>
+            <label class="dg-toggle">
+              <input type="checkbox" id="genSymbols" checked>
+              <span>!@#$ (Symbols)</span>
+            </label>
+            <label class="dg-toggle">
+              <input type="checkbox" id="genAvoidAmbiguous" checked>
+              <span>Avoid ambiguous (I, l, 0, O)</span>
+            </label>
+            <label class="dg-toggle">
+              <input type="checkbox" id="genPassphrase">
+              <span>Memorable Words</span>
+            </label>
+          </div>
+
+          <button id="btnRegenerate" class="dg-btn dg-btn-primary" style="margin-top: 14px;">
+            🔄 Generate New Password
+          </button>
+        </div>
+
+        <!-- Generated History Drawer -->
+        <div class="dg-card" style="margin-top: 14px;">
+          <h4>🕒 Recent Password History</h4>
+          <div id="genHistoryList" class="dg-history-list">
+            <!-- Recent generated passwords list -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 5: Security Health & Breach Audit -->
+      <div id="tabHealth" class="dg-tab-panel">
+        <div class="dg-health-score-card">
+          <div class="dg-score-gauge">
+            <svg viewBox="0 0 36 36" class="dg-circular-chart">
+              <path class="dg-circle-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="healthScoreCircle" class="dg-circle" stroke-dasharray="85, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="dg-score-percent" id="healthScoreText">85%</text>
+            </svg>
+          </div>
+          <div class="dg-score-details">
+            <h3>Password Health</h3>
+            <p id="healthScoreDesc">Real-time vulnerability analysis beating Dashlane standards.</p>
+          </div>
+        </div>
+
+        <div class="dg-audit-grid">
+          <div class="dg-audit-card" id="auditWeakCard">
+            <div class="dg-audit-num" id="auditWeakCount">0</div>
+            <div class="dg-audit-title">Weak</div>
+          </div>
+          <div class="dg-audit-card" id="auditReusedCard">
+            <div class="dg-audit-num" id="auditReusedCount">0</div>
+            <div class="dg-audit-title">Reused</div>
+          </div>
+          <div class="dg-audit-card" id="auditCompromisedCard">
+            <div class="dg-audit-num" id="auditCompromisedCount">0</div>
+            <div class="dg-audit-title">Breached</div>
+          </div>
+          <div class="dg-audit-card" id="auditOldCard">
+            <div class="dg-audit-num" id="auditOldCount">0</div>
+            <div class="dg-audit-title">Old (>90d)</div>
+          </div>
+        </div>
+
+        <div style="margin: 12px 0;">
+          <button id="btnPopupBreachAudit" class="dg-btn dg-btn-outline" style="width:100%; border-color:#ef4444; color:#fca5a5;">
+            🛡️ Run Live Dark Web Breach Scan (k-Anonymity)
+          </button>
+          <div id="popupBreachStatus" style="font-size:11px; color:#94a3b8; margin-top:6px; text-align:center;" class="hidden"></div>
+        </div>
+
+        <div class="dg-audit-breakdown">
+          <h4>Vulnerable Accounts</h4>
+          <div id="healthAuditList" class="dg-items-list">
+            <!-- Health issues list -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 6: Settings, Quick PIN & Firebase -->
+      <div id="tabSettings" class="dg-tab-panel">
+        <!-- Quick 4-Digit PIN Setting -->
+        <div class="dg-card">
+          <h4>⚡ Quick 4-Digit PIN Unlock</h4>
+          <p class="dg-caption">Unlock your vault in 1 second using a 4-digit PIN instead of typing your full master password every time.</p>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="inputNewQuickPin" maxlength="4" placeholder="4-digit PIN (e.g. 1234)" style="flex:1;">
+            <button id="btnSaveQuickPin" class="dg-btn-mini" style="padding:0 12px;">Save PIN</button>
+            <button id="btnRemoveQuickPin" class="dg-btn-mini hidden" style="background:#ef4444; color:#fff; padding:0 10px;">Remove</button>
+          </div>
+        </div>
+
+        <!-- Master Password Update -->
+        <div class="dg-card" style="margin-top:10px;">
+          <h4>🔑 Change Database Master Password</h4>
+          <div class="dg-form-group">
+            <div class="dg-input-eye">
+              <input type="password" id="inputNewMasterPass" placeholder="Enter new master password">
+              <button type="button" class="dg-eye-btn" data-target="inputNewMasterPass">👁️</button>
+            </div>
+          </div>
+          <button id="btnUpdateMasterPass" class="dg-btn dg-btn-outline" style="width:100%;">
+            Update Master Password in Firebase
+          </button>
+        </div>
+
+        <!-- Keyboard Shortcut Tip -->
+        <div class="dg-card" style="margin-top:10px; background: rgba(16, 185, 129, 0.08); border-color: rgba(16, 185, 129, 0.3);">
+          <h4 style="color:#10b981;">⚡ Keyboard Shortcut</h4>
+          <p class="dg-caption" style="margin:0;">Press <code>Ctrl+Shift+L</code> (or <code>Cmd+Shift+L</code> on Mac) on ANY webpage to instantly autofill without opening the popup!</p>
+        </div>
+
+        <!-- Firebase Info -->
+        <div class="dg-card" style="margin-top:10px;">
+          <h4>Firebase Database Sync</h4>
+          <div class="dg-cloud-status-box">
+            <div class="dg-cloud-row">
+              <span>Project:</span>
+              <strong id="popupFirebaseProj">Connected</strong>
+            </div>
+            <div class="dg-cloud-row">
+              <span>Status:</span>
+              <strong style="color:#10b981;">● Connected (Single-User)</strong>
+            </div>
+          </div>
+          <button id="btnManualSync" class="dg-btn dg-btn-secondary" style="margin-top:10px;">
+            🔄 Refresh From Database
+          </button>
+        </div>
+
+        <!-- Backup & Export -->
+        <div class="dg-card" style="margin-top:10px;">
+          <h4>Backup & Restore</h4>
+          <div class="dg-actions-grid">
+            <button id="btnExportJson" class="dg-btn dg-btn-outline">
+              📥 Export JSON
+            </button>
+            <button id="btnExportCsv" class="dg-btn dg-btn-outline">
+              📥 Export CSV
+            </button>
+          </div>
+          <div style="margin-top: 8px;">
+            <input type="file" id="importFileInput" accept=".json,.csv" style="display:none;">
+            <button id="btnTriggerImport" class="dg-btn dg-btn-outline" style="width:100%;">
+              📤 Import Vault (JSON/CSV)
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Add / Edit Login -->
+    <div id="modalItem" class="dg-modal hidden">
+      <div class="dg-modal-content">
+        <div class="dg-modal-header">
+          <h3 id="modalItemTitle">Add Login</h3>
+          <button class="dg-modal-close" id="btnCloseItemModal">&times;</button>
+        </div>
+        <form id="formItem" class="dg-modal-body">
+          <input type="hidden" id="itemId">
+          <div class="dg-form-group">
+            <label>Website Name / Title</label>
+            <input type="text" id="itemTitle" placeholder="e.g. Facebook, GitHub, Google" required>
+          </div>
+          <div class="dg-form-group">
+            <label>Website URL</label>
+            <div style="display:flex; gap:6px;">
+              <input type="url" id="itemUrl" placeholder="https://example.com/login" style="flex:1;">
+              <button type="button" id="btnFillCurrentUrl" class="dg-btn-mini" title="Insert current tab URL">Current Tab</button>
+            </div>
+          </div>
+          <div class="dg-form-group">
+            <label>Username / Email</label>
+            <input type="text" id="itemUsername" placeholder="user@example.com">
+          </div>
+          <div class="dg-form-group">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <label>Password</label>
+              <button type="button" id="btnGenInlinePass" class="dg-link-btn">⚡ Generate</button>
+            </div>
+            <div class="dg-input-eye">
+              <input type="password" id="itemPassword" placeholder="••••••••••••">
+              <button type="button" class="dg-eye-btn" data-target="itemPassword">👁️</button>
+            </div>
+          </div>
+          <div class="dg-form-group">
+            <label>Category</label>
+            <select id="itemCategory" class="dg-select">
+              <option value="General">General</option>
+              <option value="Social">Social</option>
+              <option value="Work">Work</option>
+              <option value="Finance">Finance</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </div>
+          <div class="dg-form-group">
+            <label>2FA / TOTP Authenticator Key (Optional Base32)</label>
+            <input type="text" id="itemTotp" placeholder="e.g. JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
+            <span class="dg-caption" style="margin-top:2px;">Displays live rotating 6-digit 2FA codes directly in DashGuard.</span>
+          </div>
+          <div class="dg-form-group">
+            <label>Secure Notes (Optional)</label>
+            <textarea id="itemNotes" rows="2" placeholder="Recovery codes, PIN, etc."></textarea>
+          </div>
+          <div class="dg-modal-footer">
+            <button type="button" class="dg-btn dg-btn-outline" id="btnCancelItem">Cancel</button>
+            <button type="submit" class="dg-btn dg-btn-primary">Save to Database</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Add / Edit Payment Card -->
+    <div id="modalCard" class="dg-modal hidden">
+      <div class="dg-modal-content">
+        <div class="dg-modal-header">
+          <h3 id="modalCardTitle">Add Payment Card</h3>
+          <button class="dg-modal-close" id="btnCloseCardModal">&times;</button>
+        </div>
+        <form id="formCard" class="dg-modal-body">
+          <input type="hidden" id="cardId">
+          <div class="dg-form-group">
+            <label>Bank / Card Nickname</label>
+            <input type="text" id="cardBank" placeholder="e.g. Chase Sapphire, City Bank Visa" required>
+          </div>
+          <div class="dg-form-group">
+            <label>Cardholder Name</label>
+            <input type="text" id="cardHolder" placeholder="Name on card" required>
+          </div>
+          <div class="dg-form-group">
+            <label>Card Number</label>
+            <input type="text" id="cardNumber" placeholder="4111 2222 3333 4444" required maxlength="19">
+          </div>
+          <div style="display:flex; gap:10px;">
+            <div class="dg-form-group" style="flex:1;">
+              <label>Expiry (MM/YY)</label>
+              <input type="text" id="cardExpiry" placeholder="12/28" maxlength="5" required>
+            </div>
+            <div class="dg-form-group" style="flex:1;">
+              <label>CVV / CVC</label>
+              <input type="password" id="cardCvv" placeholder="123" maxlength="4" required>
+            </div>
+          </div>
+          <div class="dg-modal-footer">
+            <button type="button" class="dg-btn dg-btn-outline" id="btnCancelCard">Cancel</button>
+            <button type="submit" class="dg-btn dg-btn-primary">Save Card</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Add / Edit Note -->
+    <div id="modalNote" class="dg-modal hidden">
+      <div class="dg-modal-content">
+        <div class="dg-modal-header">
+          <h3 id="modalNoteTitle">Add Secure Note</h3>
+          <button class="dg-modal-close" id="btnCloseNoteModal">&times;</button>
+        </div>
+        <form id="formNote" class="dg-modal-body">
+          <input type="hidden" id="noteId">
+          <div class="dg-form-group">
+            <label>Title</label>
+            <input type="text" id="noteTitleInput" placeholder="e.g. Server SSH Key, Wi-Fi Password" required>
+          </div>
+          <div class="dg-form-group">
+            <label>Content</label>
+            <textarea id="noteContentInput" rows="5" placeholder="Private notes saved to Firebase..." required></textarea>
+          </div>
+          <div class="dg-modal-footer">
+            <button type="button" class="dg-btn dg-btn-outline" id="btnCancelNote">Cancel</button>
+            <button type="submit" class="dg-btn dg-btn-primary">Save Note</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="dg-toast hidden"></div>
+  </div>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>

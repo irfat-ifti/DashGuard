@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DashGuard - Secure Vault Dashboard</title>
+  <link rel="stylesheet" href="vault.css">
+</head>
+<body>
+  <div id="vaultApp" class="dv-app">
+    <!-- Sidebar -->
+    <aside class="dv-sidebar">
+      <div class="dv-brand">
+        <div class="dv-brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3 0 1.13-.63 2.11-1.56 2.62l.56 2.38h-4l.56-2.38A2.99 2.99 0 0 1 9 10c0-1.66 1.34-3 3-3z"/></svg>
+        </div>
+        <div class="dv-brand-text">
+          <h2>DashGuard</h2>
+          <span class="dv-brand-badge">Zero-Knowledge</span>
+        </div>
+      </div>
+
+      <nav class="dv-nav">
+        <button class="dv-nav-item active" data-view="viewLogins">
+          <span class="dv-nav-icon">🔑</span>
+          <span>Logins & Passwords</span>
+        </button>
+        <button class="dv-nav-item" data-view="viewCards">
+          <span class="dv-nav-icon">💳</span>
+          <span>Payment Cards</span>
+        </button>
+        <button class="dv-nav-item" data-view="viewNotes">
+          <span class="dv-nav-icon">📝</span>
+          <span>Secure Notes</span>
+        </button>
+        <button class="dv-nav-item" data-view="viewHealth">
+          <span class="dv-nav-icon">🛡️</span>
+          <span>Password Health</span>
+          <span id="sidebarHealthBadge" class="dv-pill">90%</span>
+        </button>
+        <button class="dv-nav-item" data-view="viewGenerator">
+          <span class="dv-nav-icon">⚡</span>
+          <span>Password Generator</span>
+        </button>
+        <button class="dv-nav-item" data-view="viewCloud">
+          <span class="dv-nav-icon">☁️</span>
+          <span>Firebase Database</span>
+        </button>
+      </nav>
+
+      <div class="dv-sidebar-footer">
+        <div class="dv-sync-indicator">
+          <span class="dv-dot"></span>
+          <span id="dvSidebarSync">Firebase Synced</span>
+        </div>
+        <button id="btnSidebarLock" class="dv-lock-btn">
+          🔒 Lock Vault
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="dv-main">
+      <!-- Top Action Bar -->
+      <header class="dv-topbar">
+        <div class="dv-search-wrap">
+          <svg class="dv-search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          <input type="text" id="dvGlobalSearch" placeholder="Search logins by website, username, notes...">
+        </div>
+
+        <div class="dv-topbar-actions">
+          <button id="btnAddNewLogin" class="dv-btn-primary">
+            + New Login
+          </button>
+          <button id="btnAddNewCard" class="dv-btn-secondary">
+            + Payment Card
+          </button>
+          <button id="btnAddNewNote" class="dv-btn-secondary">
+            + Secure Note
+          </button>
+        </div>
+      </header>
+
+      <!-- View 1: Logins -->
+      <section id="viewLogins" class="dv-view-panel active">
+        <div class="dv-category-bar">
+          <button class="dv-cat-chip active" data-cat="all">All Items</button>
+          <button class="dv-cat-chip" data-cat="Social">Social</button>
+          <button class="dv-cat-chip" data-cat="Work">Work</button>
+          <button class="dv-cat-chip" data-cat="Finance">Finance</button>
+          <button class="dv-cat-chip" data-cat="Personal">Personal</button>
+          <button class="dv-cat-chip" data-cat="favorites">⭐ Favorites</button>
+        </div>
+
+        <div class="dv-table-container">
+          <table class="dv-table">
+            <thead>
+              <tr>
+                <th>Item / Website</th>
+                <th>Username / Email</th>
+                <th>Password</th>
+                <th>Category</th>
+                <th>Last Updated</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="dvLoginsTbody">
+              <!-- Dynamically rendered -->
+            </tbody>
+          </table>
+          <div id="dvEmptyLogins" class="dv-empty hidden">
+            <div class="dv-empty-art">🛡️</div>
+            <h3>No Logins in Vault</h3>
+            <p>Click "+ New Login" above to store your first password with zero-knowledge encryption.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- View: Payment Cards (Digital Wallet) -->
+      <section id="viewCards" class="dv-view-panel">
+        <div class="dv-cards-grid" id="dvCardsGrid">
+          <!-- Dynamically rendered payment cards -->
+        </div>
+        <div id="dvEmptyCards" class="dv-empty hidden">
+          <div class="dv-empty-art">💳</div>
+          <h3>No Payment Cards Saved</h3>
+          <p>Safely store your Visa, Mastercard, or debit cards for instant 1-click checkout autofill.</p>
+        </div>
+      </section>
+
+      <!-- View 2: Notes -->
+      <section id="viewNotes" class="dv-view-panel">
+        <div class="dv-notes-grid" id="dvNotesGrid">
+          <!-- Dynamically rendered notes -->
+        </div>
+        <div id="dvEmptyNotes" class="dv-empty hidden">
+          <div class="dv-empty-art">📝</div>
+          <h3>No Secure Notes</h3>
+          <p>Store encrypted Wi-Fi passwords, private keys, or recovery codes.</p>
+        </div>
+      </section>
+
+      <!-- View 3: Password Health (Dashlane Feature) -->
+      <section id="viewHealth" class="dv-view-panel">
+        <div class="dv-health-hero">
+          <div class="dv-health-chart-wrap">
+            <svg viewBox="0 0 36 36" class="dv-health-circle">
+              <path class="dv-c-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path id="dvHealthPath" class="dv-c-val" stroke-dasharray="88, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <text x="18" y="20.35" class="dv-c-text" id="dvHealthScore">88%</text>
+            </svg>
+          </div>
+          <div>
+            <h2>Password Security Health Score</h2>
+            <p>DashGuard audits your passwords against common vulnerabilities, reuse across domains, and compromised credentials.</p>
+          </div>
+        </div>
+
+        <div class="dv-stats-cards">
+          <div class="dv-stat-card border-red">
+            <div class="dv-stat-val" id="dvStatCompromised">0</div>
+            <div class="dv-stat-label">Compromised Passwords</div>
+          </div>
+          <div class="dv-stat-card border-orange">
+            <div class="dv-stat-val" id="dvStatWeak">0</div>
+            <div class="dv-stat-label">Weak Passwords</div>
+          </div>
+          <div class="dv-stat-card border-amber">
+            <div class="dv-stat-val" id="dvStatReused">0</div>
+            <div class="dv-stat-label">Reused Passwords</div>
+          </div>
+          <div class="dv-stat-card border-blue">
+            <div class="dv-stat-val" id="dvStatOld">0</div>
+            <div class="dv-stat-label">Old Passwords (>90d)</div>
+          </div>
+        </div>
+
+        <div class="dv-card" style="margin-top: 20px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div>
+              <h3>Zero-Knowledge Dark Web Breach Scanner</h3>
+              <p style="font-size:12px; color:#94a3b8; margin-top:2px;">Audits your passwords against 10+ billion compromised credentials (HaveIBeenPwned k-Anonymity).</p>
+            </div>
+            <button id="btnRunBreachAudit" class="dv-btn-primary" style="font-size:12px; padding:8px 14px;">
+              🛡️ Check Dark Web Breaches
+            </button>
+          </div>
+          <div id="dvBreachStatus" style="font-size:12px; color:#94a3b8; margin-bottom:10px;" class="hidden"></div>
+          <div id="dvBreachList"></div>
+        </div>
+
+        <div class="dv-card" style="margin-top: 20px;">
+          <h3>Vulnerable Accounts & Recommendations</h3>
+          <div id="dvVulnerableList" class="dv-vuln-list"></div>
+        </div>
+      </section>
+
+      <!-- View 4: Generator -->
+      <section id="viewGenerator" class="dv-view-panel">
+        <div class="dv-gen-container">
+          <div class="dv-gen-header">
+            <div class="dv-gen-password" id="dvGenPass">Select settings below</div>
+            <button id="btnDvCopyPass" class="dv-btn-primary">📋 Copy Password</button>
+          </div>
+
+          <div class="dv-card" style="margin-top:20px;">
+            <h3>Generator Customization</h3>
+            <div class="dv-gen-row" style="margin: 15px 0;">
+              <label>Password Length: <strong id="dvGenLengthVal">18</strong></label>
+              <input type="range" id="dvGenLength" min="8" max="64" value="18" style="flex:1; margin-left:20px; accent-color:#10b981;">
+            </div>
+
+            <div class="dv-gen-grid">
+              <label><input type="checkbox" id="dvGenUpper" checked> Uppercase (A-Z)</label>
+              <label><input type="checkbox" id="dvGenLower" checked> Lowercase (a-z)</label>
+              <label><input type="checkbox" id="dvGenNumbers" checked> Numbers (0-9)</label>
+              <label><input type="checkbox" id="dvGenSymbols" checked> Symbols (!@#$%^&*)</label>
+              <label><input type="checkbox" id="dvGenAmbiguous" checked> Avoid Ambiguous (0, O, 1, l)</label>
+              <label><input type="checkbox" id="dvGenWords"> Memorable Passphrase</label>
+            </div>
+
+            <button id="btnDvRegen" class="dv-btn-secondary" style="margin-top:20px;">
+              🔄 Generate New Password
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 5: Firebase Cloud Database -->
+      <section id="viewCloud" class="dv-view-panel">
+        <div class="dv-cloud-grid">
+          <div class="dv-card">
+            <h3>Firebase Realtime Database Sync</h3>
+            <p style="color:#94a3b8; font-size:13px; margin: 10px 0;">Your vault is synced with your Firebase project with end-to-end zero-knowledge encryption.</p>
+
+            <table class="dv-info-table">
+              <tr>
+                <td>Firebase Project ID:</td>
+                <td><strong id="dvFirebaseProjId">Configured</strong></td>
+              </tr>
+              <tr>
+                <td>Database URL:</td>
+                <td><code id="dvFirebaseDbUrl">Configured</code></td>
+              </tr>
+              <tr>
+                <td>Auth Domain:</td>
+                <td><code id="dvFirebaseAuthDomain">Configured</code></td>
+              </tr>
+              <tr>
+                <td>Last Cloud Sync:</td>
+                <td id="dvLastSyncTime">Just now</td>
+              </tr>
+              <tr>
+                <td>Encryption Mode:</td>
+                <td><span style="color:#10b981; font-weight:700;">AES-GCM-256 + PBKDF2</span></td>
+              </tr>
+            </table>
+
+            <button id="btnDvForceSync" class="dv-btn-primary" style="margin-top:15px;">
+              ☁️ Force Firebase Sync Now
+            </button>
+          </div>
+
+          <div class="dv-card">
+            <h3>Vault Backup & Restore</h3>
+            <p style="color:#94a3b8; font-size:13px; margin: 10px 0;">Export your encrypted credentials to a file or import logins from other password managers.</p>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+              <button id="btnDvExportJson" class="dv-btn-secondary">📥 Export JSON</button>
+              <button id="btnDvExportCsv" class="dv-btn-secondary">📥 Export CSV</button>
+            </div>
+
+            <div style="margin-top:20px;">
+              <input type="file" id="dvImportFile" accept=".json,.csv" style="display:none;">
+              <button id="btnDvImportTrigger" class="dv-btn-secondary" style="width:100%;">
+                📤 Import From File (JSON/CSV)
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modal: Add/Edit Login -->
+    <div id="dvModalItem" class="dv-modal hidden">
+      <div class="dv-modal-box">
+        <div class="dv-modal-head">
+          <h3 id="dvModalItemHeading">Add Login</h3>
+          <button id="btnDvCloseItemModal" class="dv-close-btn">&times;</button>
+        </div>
+        <form id="dvFormItem" class="dv-modal-form">
+          <input type="hidden" id="dvItemId">
+          <div class="dv-field">
+            <label>Title / Service Name</label>
+            <input type="text" id="dvItemTitle" placeholder="e.g. GitHub, Google, Amazon" required>
+          </div>
+          <div class="dv-field">
+            <label>Website URL</label>
+            <input type="url" id="dvItemUrl" placeholder="https://github.com/login">
+          </div>
+          <div class="dv-field">
+            <label>Username / Email</label>
+            <input type="text" id="dvItemUsername" placeholder="user@example.com">
+          </div>
+          <div class="dv-field">
+            <div style="display:flex; justify-content:space-between;">
+              <label>Password</label>
+              <button type="button" id="btnDvGenInline" style="background:none; border:none; color:#10b981; cursor:pointer; font-weight:600;">⚡ Generate</button>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="dvItemPassword" placeholder="Strong password" style="flex:1;">
+            </div>
+          </div>
+          <div class="dv-field">
+            <label>Category</label>
+            <select id="dvItemCategory">
+              <option value="General">General</option>
+              <option value="Social">Social</option>
+              <option value="Work">Work</option>
+              <option value="Finance">Finance</option>
+              <option value="Personal">Personal</option>
+            </select>
+          </div>
+          <div class="dv-field">
+            <label>2FA / TOTP Authenticator Key (Optional Base32)</label>
+            <input type="text" id="dvItemTotp" placeholder="e.g. JBSWY3DPEHPK3PXP" autocomplete="off" spellcheck="false">
+            <span style="font-size:11px; color:#94a3b8; display:block; margin-top:3px;">Generates live 30s rotating 6-digit verification codes for 2-step login.</span>
+          </div>
+          <div class="dv-field">
+            <label>Notes</label>
+            <textarea id="dvItemNotes" rows="2" placeholder="Recovery codes, PIN, security questions..."></textarea>
+          </div>
+          <div class="dv-modal-foot">
+            <button type="button" id="btnDvCancelItem" class="dv-btn-secondary">Cancel</button>
+            <button type="submit" class="dv-btn-primary">Save to Vault</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Add/Edit Note -->
+    <div id="dvModalNote" class="dv-modal hidden">
+      <div class="dv-modal-box">
+        <div class="dv-modal-head">
+          <h3 id="dvModalNoteHeading">Add Secure Note</h3>
+          <button id="btnDvCloseNoteModal" class="dv-close-btn">&times;</button>
+        </div>
+        <form id="dvFormNote" class="dv-modal-form">
+          <input type="hidden" id="dvNoteId">
+          <div class="dv-field">
+            <label>Title</label>
+            <input type="text" id="dvNoteTitle" placeholder="e.g. Wi-Fi Password, Server Keys" required>
+          </div>
+          <div class="dv-field">
+            <label>Note Content</label>
+            <textarea id="dvNoteContent" rows="6" placeholder="Confidential information..." required></textarea>
+          </div>
+          <div class="dv-modal-foot">
+            <button type="button" id="btnDvCancelNote" class="dv-btn-secondary">Cancel</button>
+            <button type="submit" class="dv-btn-primary">Save Note</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal: Add/Edit Payment Card -->
+    <div id="dvModalCard" class="dv-modal hidden">
+      <div class="dv-modal-box">
+        <div class="dv-modal-head">
+          <h3 id="dvModalCardHeading">Add Payment Card</h3>
+          <button id="btnDvCloseCardModal" class="dv-close-btn">&times;</button>
+        </div>
+        <form id="dvFormCard" class="dv-modal-form">
+          <input type="hidden" id="dvCardId">
+          <div class="dv-field">
+            <label>Cardholder Name</label>
+            <input type="text" id="dvCardHolder" placeholder="e.g. JOHN DOE" required>
+          </div>
+          <div class="dv-field">
+            <label>Card Number</label>
+            <input type="text" id="dvCardNumber" placeholder="4532 •••• •••• 8891" maxlength="19" required>
+          </div>
+          <div style="display:flex; gap:12px;">
+            <div class="dv-field" style="flex:1;">
+              <label>Expires (MM/YY)</label>
+              <input type="text" id="dvCardExpiry" placeholder="12/28" maxlength="5" required>
+            </div>
+            <div class="dv-field" style="flex:1;">
+              <label>CVV / CVC</label>
+              <input type="password" id="dvCardCvv" placeholder="•••" maxlength="4" required>
+            </div>
+          </div>
+          <div class="dv-field">
+            <label>Bank / Card Label</label>
+            <input type="text" id="dvCardBank" placeholder="e.g. Chase Sapphire, Citi, Standard Chartered">
+          </div>
+          <div class="dv-modal-foot">
+            <button type="button" id="btnDvCancelCard" class="dv-btn-secondary">Cancel</button>
+            <button type="submit" class="dv-btn-primary">Save Card</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="dvToast" class="dv-toast hidden"></div>
+  </div>
+
+  <script type="module" src="vault.js"></script>
+</body>
+</html>

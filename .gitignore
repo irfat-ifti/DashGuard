@@ -1,0 +1,50 @@
+# ==============================================================================
+# DashGuard Security & Data Leak Prevention (.gitignore)
+# ==============================================================================
+
+# Private Firebase Configuration with API keys (Use firebase-config.example.js instead)
+firebase-config.js
+
+# Environment variables & secrets
+.env
+.env.*
+!.env.example
+
+# Exported Vault Backups & Credentials (NEVER commit user logins/vaults)
+*dashguard-vault-backup*
+*dashguard-logins*
+*.backup
+*.bak
+*.sql
+*.sqlite
+
+# Cryptographic Keys & Certificates
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+
+# Node dependencies & logs
+node_modules/
+package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.log
+
+# OS & Editor generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary folders
+tmp/
+temp/
+scratch/

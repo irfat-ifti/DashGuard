@@ -1,0 +1,494 @@
+/* DashGuard Advanced In-Page Content Styles */
+
+/* In-Field Shield Icon with Badge Indicator */
+.dg-field-icon {
+  position: absolute !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 7px !important;
+  background: #090d16 !important;
+  border: 1.5px solid #10b981 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  z-index: 2147483645 !important;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.45) !important;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, background 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+.dg-field-icon:hover {
+  transform: scale(1.15) !important;
+  box-shadow: 0 0 16px rgba(16, 185, 129, 0.8) !important;
+  background: #0f172a !important;
+  border-color: #34d399 !important;
+}
+
+.dg-field-icon svg {
+  width: 14px !important;
+  height: 14px !important;
+  fill: #10b981 !important;
+  pointer-events: none !important;
+  display: block !important;
+}
+
+.dg-field-icon.pulse {
+  animation: dgIconPulse 2s infinite !important;
+}
+
+@keyframes dgIconPulse {
+  0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Match count pill on icon */
+.dg-icon-counter {
+  position: absolute !important;
+  top: -4px !important;
+  right: -4px !important;
+  background: #10b981 !important;
+  color: #030712 !important;
+  font-size: 9px !important;
+  font-weight: 800 !important;
+  width: 13px !important;
+  height: 13px !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: none !important;
+}
+
+/* Live Inline Strength Meter as user types */
+.dg-inline-strength {
+  position: absolute !important;
+  z-index: 2147483644 !important;
+  background: #0b1329 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #f8fafc !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+  animation: dgFade 0.2s ease-out !important;
+}
+
+.dg-inline-bar {
+  width: 50px !important;
+  height: 4px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+.dg-inline-bar-fill {
+  height: 100% !important;
+  transition: width 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* Floating Dashlane-Style Autofill Dropdown */
+.dg-dropdown-container {
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  width: 320px !important;
+  background: #0b1329 !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 14px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.75), 0 0 25px rgba(16, 185, 129, 0.35) !important;
+  padding: 12px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  color: #f8fafc !important;
+  box-sizing: border-box !important;
+  animation: dgDropdownFade 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+@keyframes dgDropdownFade {
+  from { opacity: 0; transform: translateY(-8px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.dg-dropdown-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding-bottom: 8px !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  margin-bottom: 8px !important;
+}
+
+.dg-dropdown-tabs {
+  display: flex !important;
+  gap: 4px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  padding: 2px !important;
+  border-radius: 6px !important;
+}
+
+.dg-dd-tab {
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 4px 8px !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+}
+
+.dg-dd-tab.active {
+  background: #10b981 !important;
+  color: #030712 !important;
+}
+
+.dg-dropdown-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #10b981 !important;
+  letter-spacing: 0.3px !important;
+}
+
+.dg-dropdown-title svg {
+  width: 16px !important;
+  height: 16px !important;
+  fill: #10b981 !important;
+}
+
+.dg-dropdown-close {
+  background: transparent !important;
+  border: none !important;
+  color: #94a3b8 !important;
+  cursor: pointer !important;
+  font-size: 16px !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  line-height: 1 !important;
+}
+
+.dg-dropdown-close:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.dg-account-list {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  max-height: 220px !important;
+  overflow-y: auto !important;
+}
+
+.dg-account-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 10px 12px !important;
+  border-radius: 8px !important;
+  cursor: pointer !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid transparent !important;
+  transition: all 0.15s ease !important;
+  margin-bottom: 6px !important;
+}
+
+.dg-account-item:hover {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  transform: translateX(2px) !important;
+}
+
+.dg-acc-info {
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+}
+
+.dg-acc-user {
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.dg-acc-site {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+  margin-top: 2px !important;
+}
+
+.dg-fill-group {
+  display: flex !important;
+  gap: 4px !important;
+}
+
+.dg-acc-fill-btn {
+  background: #10b981 !important;
+  color: #030712 !important;
+  border: none !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  padding: 5px 10px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3) !important;
+}
+
+.dg-acc-fill-btn:hover {
+  background: #34d399 !important;
+}
+
+.dg-acc-fill-submit {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #10b981 !important;
+  border: 1px solid #10b981 !important;
+  font-size: 10px !important;
+  font-weight: 700 !important;
+  padding: 5px 8px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+}
+
+.dg-acc-fill-submit:hover {
+  background: #10b981 !important;
+  color: #030712 !important;
+}
+
+.dg-dropdown-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  margin-top: 8px !important;
+  padding-top: 8px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.dg-action-btn {
+  width: 100% !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px dashed rgba(16, 185, 129, 0.4) !important;
+  color: #10b981 !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  padding: 8px 10px !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  transition: all 0.15s ease !important;
+  box-sizing: border-box !important;
+}
+
+.dg-action-btn:hover {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border-color: #10b981 !important;
+}
+
+.dg-empty-state {
+  padding: 16px 10px !important;
+  text-align: center !important;
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+  line-height: 1.5 !important;
+}
+
+/* Floating Save Prompt Banner */
+.dg-save-banner {
+  position: fixed !important;
+  top: 24px !important;
+  right: 24px !important;
+  width: 330px !important;
+  background: #0b1329 !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(16, 185, 129, 0.35) !important;
+  padding: 16px !important;
+  z-index: 2147483647 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #f8fafc !important;
+  animation: dgSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  box-sizing: border-box !important;
+}
+
+@keyframes dgSlideIn {
+  from { opacity: 0; transform: translateX(50px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+.dg-save-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 10px !important;
+}
+
+.dg-save-brand {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-weight: 700 !important;
+  font-size: 13px !important;
+  color: #10b981 !important;
+}
+
+.dg-save-brand svg {
+  width: 16px !important;
+  height: 16px !important;
+  fill: #10b981 !important;
+}
+
+.dg-save-body {
+  font-size: 12px !important;
+  color: #cbd5e1 !important;
+  line-height: 1.5 !important;
+  margin-bottom: 14px !important;
+}
+
+.dg-save-cred-preview {
+  background: rgba(255, 255, 255, 0.06) !important;
+  padding: 8px 10px !important;
+  border-radius: 6px !important;
+  font-family: monospace !important;
+  font-size: 11px !important;
+  color: #34d399 !important;
+  margin-top: 8px !important;
+  word-break: break-all !important;
+}
+
+.dg-save-actions {
+  display: flex !important;
+  gap: 10px !important;
+}
+
+.dg-btn-save {
+  flex: 1 !important;
+  background: #10b981 !important;
+  color: #030712 !important;
+  font-weight: 700 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 9px 14px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+  transition: opacity 0.15s ease !important;
+}
+
+.dg-btn-save:hover {
+  opacity: 0.9 !important;
+}
+
+.dg-btn-cancel {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #94a3b8 !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 9px 14px !important;
+  font-size: 12px !important;
+  cursor: pointer !important;
+}
+
+.dg-btn-cancel:hover {
+  color: #f8fafc !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Floating Smart Password Generator Pill */
+.dg-smart-pill {
+  position: absolute !important;
+  z-index: 2147483646 !important;
+  background: #090d16 !important;
+  border: 1.5px solid #10b981 !important;
+  border-radius: 20px !important;
+  padding: 6px 14px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 12px !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(16, 185, 129, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  animation: dgPillSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease !important;
+}
+
+.dg-smart-pill:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.6) !important;
+  background: #0f172a !important;
+}
+
+.dg-smart-pill strong {
+  color: #10b981 !important;
+  font-family: monospace !important;
+  letter-spacing: 0.5px !important;
+}
+
+.dg-pill-btn {
+  background: #10b981 !important;
+  color: #030712 !important;
+  font-weight: 800 !important;
+  font-size: 11px !important;
+  padding: 2px 8px !important;
+  border-radius: 12px !important;
+  border: none !important;
+  margin-left: 4px !important;
+  pointer-events: none !important;
+}
+
+/* Floating 2FA / OTP Pill */
+.dg-otp-pill {
+  position: absolute !important;
+  z-index: 2147483646 !important;
+  background: #0a101f !important;
+  border: 1.5px solid #38bdf8 !important;
+  border-radius: 20px !important;
+  padding: 6px 14px !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 12px !important;
+  color: #f8fafc !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), 0 0 12px rgba(56, 189, 248, 0.3) !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  cursor: pointer !important;
+  animation: dgPillSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.dg-otp-pill:hover {
+  background: #0f1e38 !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.5) !important;
+}
+
+.dg-otp-pill strong {
+  font-family: monospace !important;
+  color: #38bdf8 !important;
+  font-size: 13px !important;
+  letter-spacing: 1px !important;
+}
+
+@keyframes dgPillSlide {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+

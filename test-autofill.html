@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DashGuard Autofill & In-Field Icon Playground</title>
+  <style>
+    body {
+      background: #090d16;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      max-width: 860px;
+      width: 100%;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    h2 {
+      margin-top: 0;
+      color: #10b981;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    p.sub {
+      color: #94a3b8;
+      font-size: 12px;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 7px;
+      color: #cbd5e1;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      background: #030712;
+      border: 1.5px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.25);
+    }
+    button.submit-btn {
+      width: 100%;
+      background: #10b981;
+      color: #030712;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.15s ease;
+    }
+    button.submit-btn:hover {
+      background: #059669;
+    }
+    .banner {
+      max-width: 860px;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 78, 59, 0.2));
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      font-size: 13px;
+      color: #a7f3d0;
+      line-height: 1.5;
+      box-sizing: border-box;
+    }
+    .banner strong {
+      color: #34d399;
+    }
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="banner">
+    <strong>🛡️ DashGuard In-Field Icon & Autofill Playground:</strong><br>
+    Notice the green <strong>DashGuard Shield Icon</strong> sitting right inside each input field below (just like Dashlane).<br>
+    Click the green shield icon to open the floating autofill dropdown, generate strong passwords, or submit new credentials to see the "Save to DashGuard" prompt!
+  </div>
+
+  <div class="grid">
+    <!-- Test Form 1: Sign In -->
+    <div class="card">
+      <h2>🔑 Sign In Form</h2>
+      <p class="sub">Test in-field icon click, domain matching, and 1-click autofill.</p>
+
+      <form id="signInForm" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="loginEmail">Email / Username</label>
+          <input type="email" id="loginEmail" name="email" placeholder="user@company.com" autocomplete="username">
+        </div>
+
+        <div class="form-group">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" name="password" placeholder="••••••••••••" autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="submit-btn">Sign In</button>
+      </form>
+    </div>
+
+    <!-- Test Form 2: Sign Up / New Account -->
+    <div class="card">
+      <h2>✨ Create Account Form</h2>
+      <p class="sub">Focus password field to see DashGuard's floating Smart Generator Pill!</p>
+
+      <form id="signUpForm" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="regEmail">Work Email</label>
+          <input type="email" id="regEmail" name="reg_email" placeholder="alex@startup.io">
+        </div>
+
+        <div class="form-group">
+          <label for="regPass">Create New Password</label>
+          <input type="password" id="regPass" name="reg_password" placeholder="Focus here to see smart pill">
+        </div>
+
+        <div class="form-group">
+          <label for="regPassConfirm">Confirm Password</label>
+          <input type="password" id="regPassConfirm" name="reg_password_confirm" placeholder="Automatically filled by smart pill!">
+        </div>
+
+        <button type="submit" class="submit-btn">Register Account</button>
+      </form>
+    </div>
+
+    <!-- Test Form 3: Payment Card Checkout -->
+    <div class="card">
+      <h2>💳 Payment Card Checkout</h2>
+      <p class="sub">Click the shield icon to autofill your saved Visa or Mastercard.</p>
+
+      <form id="cardForm" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="ccName">Cardholder Name</label>
+          <input type="text" id="ccName" name="cc_name" placeholder="John Doe">
+        </div>
+
+        <div class="form-group">
+          <label for="ccNum">Card Number</label>
+          <input type="text" id="ccNum" name="cardnumber" placeholder="•••• •••• •••• ••••">
+        </div>
+
+        <div style="display:flex; gap:10px;">
+          <div class="form-group" style="flex:1;">
+            <label for="ccExp">Expiry (MM/YY)</label>
+            <input type="text" id="ccExp" name="cc_exp" placeholder="12/28">
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label for="ccCvv">CVV / CVC</label>
+            <input type="password" id="ccCvv" name="cvv" placeholder="•••" maxlength="4">
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Pay Now</button>
+      </form>
+    </div>
+
+    <!-- Test Form 4: 2FA / Two-Factor Authentication Code -->
+    <div class="card">
+      <h2>🛡️ Two-Factor (2FA / OTP)</h2>
+      <p class="sub">Focus this field to see the live rotating 6-digit 2FA code autofill chip!</p>
+
+      <form id="otpForm" onsubmit="event.preventDefault();">
+        <div class="form-group">
+          <label for="otpCode">6-Digit Verification Code</label>
+          <input type="text" id="otpCode" name="otp" placeholder="000 000" maxlength="6" autocomplete="one-time-code">
+        </div>
+
+        <button type="submit" class="submit-btn">Verify 2FA Code</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
